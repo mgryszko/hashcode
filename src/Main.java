@@ -1,28 +1,25 @@
-import org.apache.commons.lang3.NotImplementedException;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
-    private static Map<Car, List<Ride>> carRides = new HashMap<>();
+    static Map<Car, List<Ride>> carRides = new HashMap<>();
+    static Rides rides = new Rides();
 
     public static void main(String[] args) throws IOException
     {
         String configurationLine = openFile(args[0]).findFirst().get();
         Configuration configuration = parseConfig(configurationLine);
 
-      AtomicInteger rideId = new AtomicInteger(-1);
+        AtomicInteger rideId = new AtomicInteger(-1);
 
-      List<Ride> rides = openFile(args[0])
+        openFile(args[0])
           .skip(1)
           .peek(line -> rideId.incrementAndGet())
-          .map(line -> parseRide(line, rideId))
-          .collect(Collectors.toList());
+          .forEach(line -> rides.addRide(parseRide(line, rideId)));
 
         System.out.println(configuration);
         System.out.println(rides);
@@ -44,13 +41,16 @@ public class Main {
             tick = event.nextTick;
             events.add(process(event));
         }
+
+
     }
 
     private static Event process(Event event)
     {
         switch (event.type) {
             case CarBecameAvailable:
-                throw new NotImplementedException("Dani curraselo");
+                List<Ride> bestRides = rides.findClosestTo(event.car);
+                return new Event(event.nextTick + event.ride.distance(), event.car, bestRides.get(0), Event.Type.PickUpRide);
             case PickUpRide:
                 return new Event(event.nextTick + event.ride.distance(), event.car, event.ride, Event.Type.RideFinished);
             case RideFinished:
