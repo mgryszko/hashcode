@@ -15,7 +15,7 @@ public class Rides {
         rides[ride.distanceFromStart].add(ride);
     }
 
-    public Collection<Ride> findClosestTo(Car car) {
+    public List<Ride> findClosestTo(Car car) {
         Position position = car.position;
         int distanceFromZero = position.x + position.y;
 
@@ -28,7 +28,7 @@ public class Rides {
             }
 
             if(distanceFromZero + index < rides.length && rides[distanceFromZero + index] != null && !rides[distanceFromZero + index].isEmpty()) {
-                prospectRides.addAll(rides[distanceFromZero - index]);
+                prospectRides.addAll(rides[distanceFromZero + index]);
             }
 
             available -= prospectRides.size();

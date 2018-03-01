@@ -2,6 +2,10 @@ class Car
 {
   Position position;
 
+  public Car(Position position) {
+    this.position = position;
+  }
+
   int score(Ride ride, int rideBonus)
   {
     int distanceToRide = position.distanceTo(ride.startPos);
