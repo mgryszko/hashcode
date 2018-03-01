@@ -23,7 +23,7 @@ class Car
     return points - cost;
   }
 
-  private int distanceTo(Ride ride)
+  int distanceTo(Ride ride)
   {
     return position.distanceTo(ride.startPos);
   }

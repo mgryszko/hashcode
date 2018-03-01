@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -42,7 +43,10 @@ public class Main {
             events.add(process(event));
         }
 
-
+      for (List<Ride> entry : carRides.values())
+      {
+        System.out.println("" + entry.size() + entry.stream().map(ride -> " " + ride.id));
+      }
     }
 
     private static Event process(Event event)
@@ -50,7 +54,8 @@ public class Main {
         switch (event.type) {
             case CarBecameAvailable:
                 List<Ride> bestRides = rides.findClosestTo(event.car);
-                return new Event(event.nextTick + event.ride.distance(), event.car, bestRides.get(0), Event.Type.PickUpRide);
+              Ride ride = bestRides.get(0);
+              return new Event(event.nextTick + event.car.distanceTo(ride), event.car, ride, Event.Type.PickUpRide);
             case PickUpRide:
                 return new Event(event.nextTick + event.ride.distance(), event.car, event.ride, Event.Type.RideFinished);
             case RideFinished:
