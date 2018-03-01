@@ -18,16 +18,18 @@ class RidesTest
     {
       throw new RuntimeException("Fallo Rides 1");
     }
-    if (rides1.get(1).startPos.x != 0 || rides1.get(1).startPos.y != 1)
-    {
-      throw new RuntimeException("Fallo Rides 1");
-    }
 
     List<Ride> rides2 = rides.findClosestTo(new Car(700, 700));
     if (rides2.get(0).startPos.x != 800 || rides2.get(0).startPos.y != 1000)
     {
       throw new RuntimeException("Fallo Rides 2");
     }
+
+      List<Ride> rides22 = rides.findClosestTo(new Car(700, 700));
+      if (rides22.get(0).startPos.x != 16 || rides22.get(0).startPos.y != 15)
+      {
+          throw new RuntimeException("Fallo Rides 2.2");
+      }
 
     List<Ride> rides3 = rides.findClosestTo(new Car(3, 2));
     if (rides3.get(0).startPos.x != 0 || rides3.get(0).startPos.y != 5)

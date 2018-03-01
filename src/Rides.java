@@ -24,16 +24,17 @@ public class Rides {
         List<Ride> prospectRides = new ArrayList<>();
         while(available > 0) {
             if(distanceFromZero - index > 0 && rides[distanceFromZero - index] != null && !rides[distanceFromZero - index].isEmpty()) {
-                prospectRides.addAll(rides[distanceFromZero - index]);
+                prospectRides.add(rides[distanceFromZero - index].remove(0));
             }
 
             if(distanceFromZero + index < rides.length && rides[distanceFromZero + index] != null && !rides[distanceFromZero + index].isEmpty()) {
-                prospectRides.addAll(rides[distanceFromZero + index]);
+                prospectRides.add(rides[distanceFromZero + index].remove(0));
             }
 
             available -= prospectRides.size();
             index++;
         }
+
 
         return prospectRides;
     }
