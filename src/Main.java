@@ -1,60 +1,90 @@
+import org.apache.commons.lang3.NotImplementedException;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Main
-{
-  public static void main(String[] args) throws IOException
-  {
-    String configurationLine = openFile(args[0]).findFirst().get();
-    Configuration configuration = parseConfig(configurationLine);
+public class Main {
+    private static Map<Car, List<Ride>> carRides = new HashMap<>();
 
-    AtomicInteger rideId = new AtomicInteger(-1);
-
-    List<Ride> rides = openFile(args[0]).skip(1)
-                                        .peek(line -> rideId.incrementAndGet())
-                                        .map(line -> parseRide(line, rideId))
-                                        .collect(Collectors.toList());
-
-    System.out.println(configuration);
-    System.out.println(rides);
-
-    for (int step = 0; step < configuration.steps; step++)
+    public static void main(String[] args) throws IOException
     {
+        String configurationLine = openFile(args[0]).findFirst().get();
+        Configuration configuration = parseConfig(configurationLine);
 
+      AtomicInteger rideId = new AtomicInteger(-1);
+
+      List<Ride> rides = openFile(args[0])
+          .skip(1)
+          .peek(line -> rideId.incrementAndGet())
+          .map(line -> parseRide(line, rideId))
+          .collect(Collectors.toList());
+
+        System.out.println(configuration);
+        System.out.println(rides);
+
+        List<Car> cars = new ArrayList<>(configuration.vehicles);
+        PriorityQueue<Event> events = new PriorityQueue<>();
+
+        for (int i = 0; i < configuration.vehicles; i++)
+        {
+            Car car = new Car(0, 0);
+            cars.add(car);
+            events.add(new Event(0, car, null, Event.Type.CarBecameAvailable));
+        }
+
+        int tick = 0;
+        while (events.size() > 0 && tick < configuration.steps)
+        {
+            Event event = events.poll();
+            tick = event.nextTick;
+            events.add(process(event));
+        }
     }
-  }
 
-  private static Stream<String> openFile(String fileName) throws IOException
-  {
-    return Files.lines(Paths.get(fileName));
-  }
+    private static Event process(Event event)
+    {
+        switch (event.type) {
+            case CarBecameAvailable:
+                throw new NotImplementedException("Dani curraselo");
+            case PickUpRide:
+                return new Event(event.nextTick + event.ride.distance(), event.car, event.ride, Event.Type.RideFinished);
+            case RideFinished:
+                return new Event(event.nextTick, event.car, null, Event.Type.CarBecameAvailable);
+        }
+        throw new IllegalArgumentException("Event not recognized: " + event);
+    }
 
-  private static Configuration parseConfig(String line)
-  {
-    String[] fields = line.split(" ");
-    int rows = Integer.parseInt(fields[0]);
-    int columns = Integer.parseInt(fields[1]);
-    int vehicles = Integer.parseInt(fields[2]);
-    int rides = Integer.parseInt(fields[3]);
-    int bonus = Integer.parseInt(fields[4]);
-    int steps = Integer.parseInt(fields[5]);
-    return new Configuration(rows, columns, vehicles, rides, bonus, steps);
-  }
+    private static Stream<String> openFile(String fileName) throws IOException
+    {
+        return Files.lines(Paths.get(fileName));
+    }
 
-  private static Ride parseRide(String line, AtomicInteger id)
-  {
-    String[] fields = line.split(" ");
-    int startX = Integer.parseInt(fields[0]);
-    int startY = Integer.parseInt(fields[1]);
-    int endX = Integer.parseInt(fields[2]);
-    int endY = Integer.parseInt(fields[3]);
-    int earliestStart = Integer.parseInt(fields[4]);
-    int latestFinish = Integer.parseInt(fields[5]);
-    return new Ride(id.get(), startX, startY, endX, endY, earliestStart, latestFinish);
-  }
+    private static Configuration parseConfig(String line)
+    {
+        String[] fields = line.split(" ");
+        int rows = Integer.parseInt(fields[0]);
+        int columns = Integer.parseInt(fields[1]);
+        int vehicles = Integer.parseInt(fields[2]);
+        int rides = Integer.parseInt(fields[3]);
+        int bonus = Integer.parseInt(fields[4]);
+        int steps = Integer.parseInt(fields[5]);
+        return new Configuration(rows, columns, vehicles, rides, bonus, steps);
+    }
+
+    private static Ride parseRide(String line, AtomicInteger rideId)
+    {
+        String[] fields = line.split(" ");
+        int startX = Integer.parseInt(fields[0]);
+        int startY = Integer.parseInt(fields[1]);
+        int endX = Integer.parseInt(fields[2]);
+        int endY = Integer.parseInt(fields[3]);
+        int earliestStart = Integer.parseInt(fields[4]);
+        int latestFinish = Integer.parseInt(fields[5]);
+        return new Ride(rideId.get(), startX, startY, endX, endY, earliestStart, latestFinish);
+    }
 }

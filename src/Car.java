@@ -2,13 +2,14 @@ class Car
 {
   Position position;
 
-  public Car(Position position) {
-    this.position = position;
+  Car(int x, int y)
+  {
+    position = new Position(x, y);
   }
 
   int score(Ride ride, int rideBonus)
   {
-    int distanceToRide = position.distanceTo(ride.startPos);
+    int distanceToRide = distanceTo(ride);
     int rideDistance = ride.distance();
 
     boolean unableToFinish = distanceToRide + rideDistance > ride.latestFinish;
@@ -17,9 +18,18 @@ class Car
     boolean canEarnBonus = distanceToRide <= ride.earliestStart;
     int points = rideDistance + (canEarnBonus ? rideBonus : 0);
 
-    int waitTime = ride.earliestStart - distanceToRide;
-    int cost = distanceToRide + waitTime;
+    int cost = distanceToRide + waitTimeFor(ride);
 
     return points - cost;
+  }
+
+  private int distanceTo(Ride ride)
+  {
+    return position.distanceTo(ride.startPos);
+  }
+
+  private int waitTimeFor(Ride ride)
+  {
+    return ride.earliestStart - distanceTo(ride);
   }
 }
