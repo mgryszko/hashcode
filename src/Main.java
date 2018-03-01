@@ -54,6 +54,11 @@ public class Main {
             case PickUpRide:
                 return new Event(event.nextTick + event.ride.distance(), event.car, event.ride, Event.Type.RideFinished);
             case RideFinished:
+                carRides.computeIfAbsent(event.car, car -> new ArrayList<>());
+                carRides.computeIfPresent(event.car, (car, rides) -> {
+                  rides.add(event.ride);
+                  return rides;
+                });
                 return new Event(event.nextTick, event.car, null, Event.Type.CarBecameAvailable);
         }
         throw new IllegalArgumentException("Event not recognized: " + event);
