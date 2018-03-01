@@ -6,6 +6,7 @@ class Ride
   final Position endPos;
   final int earliestStart;
   final int latestFinish;
+  final int distanceFromStart;
 
   Ride(int startX, int startY, int endX, int endY, int earliestStart, int latestFinish)
   {
@@ -13,6 +14,7 @@ class Ride
     endPos = new Position(endX, endY);
     this.earliestStart = earliestStart;
     this.latestFinish = latestFinish;
+    distanceFromStart = startX + startY;
   }
 
   @Override public String toString()
