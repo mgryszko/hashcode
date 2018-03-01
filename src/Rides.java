@@ -21,6 +21,7 @@ public class Rides {
 
         int available = 1;
         int index = 0;
+
         List<Ride> prospectRides = new ArrayList<>();
         while(available > 0) {
             if(distanceFromZero - index > 0 && rides[distanceFromZero - index] != null && !rides[distanceFromZero - index].isEmpty()) {
