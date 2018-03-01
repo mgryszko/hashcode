@@ -4,15 +4,15 @@ import java.util.*;
 
 public class EasyRides
 {
-    final List<Ride> rides = new ArrayList();
+    final Set<Ride> rides = new TreeSet<>();
 
     public void addRide(Ride ride) {
         rides.add(ride);
     }
 
-    public Ride findClosestTo(Car car) {
+    public Ride findClosestTo(Car car, int bonus) {
         Ride bestRide = rides.stream()
-          .filter(ride -> car.score(ride, 0) > 0)
+          .filter(ride -> car.score(ride, bonus) > 0)
           .findFirst()
           .orElse(null);
 

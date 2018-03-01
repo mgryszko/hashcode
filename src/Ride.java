@@ -1,6 +1,6 @@
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-class Ride
+class Ride implements Comparable<Ride>
 {
   final int id;
   final Position startPos;
@@ -19,6 +19,16 @@ class Ride
     distanceFromStart = startX + startY;
   }
 
+  public int distance()
+  {
+    return startPos.distanceTo(endPos);
+  }
+
+  @Override public int compareTo(Ride o)
+  {
+    return earliestStart - o.earliestStart;
+  }
+
   @Override
   public String toString()
   {
@@ -29,10 +39,5 @@ class Ride
       .append("earliestStart", earliestStart)
       .append("latestFinish", latestFinish)
       .toString();
-  }
-
-  public int distance()
-  {
-    return startPos.distanceTo(endPos);
   }
 }

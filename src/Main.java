@@ -9,11 +9,12 @@ import java.util.stream.Stream;
 public class Main {
     static Map<Car, List<Ride>> carRides = new HashMap<>();
     static EasyRides rides = new EasyRides();
+    static Configuration configuration;
 
     public static void main(String[] args) throws IOException
     {
         String configurationLine = openFile(args[0]).findFirst().get();
-        Configuration configuration = parseConfig(configurationLine);
+        configuration = parseConfig(configurationLine);
 
         AtomicInteger rideId = new AtomicInteger(-1);
 
@@ -21,9 +22,6 @@ public class Main {
           .skip(1)
           .peek(line -> rideId.incrementAndGet())
           .forEach(line -> rides.addRide(parseRide(line, rideId)));
-
-        System.out.println(configuration);
-        System.out.println(rides);
 
         List<Car> cars = new ArrayList<>(configuration.vehicles);
         PriorityQueue<Event> events = new PriorityQueue<>();
@@ -53,7 +51,7 @@ public class Main {
     {
         switch (event.type) {
             case CarBecameAvailable:
-              Ride ride = rides.findClosestTo(event.car);
+              Ride ride = rides.findClosestTo(event.car, configuration.bonus);
               if (ride != null)
               {
                 int nextTick = Math.max(event.nextTick + event.car.distanceTo(ride), ride.earliestStart);
