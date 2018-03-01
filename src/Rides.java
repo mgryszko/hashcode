@@ -2,40 +2,28 @@ import java.util.*;
 
 public class Rides {
 
-    int totalRides = 0;
-    private final int arbitrarySearchSize = 10;
-    final List<Ride>[] rides = new List[10000];
+    ArrayList<Ride> rides = new ArrayList<>();
 
     public void addRide(Ride ride) {
-        if(rides[ride.distanceFromStart] == null) {
-            rides[ride.distanceFromStart] = new ArrayList<>();
-        }
+        rides.add(ride);
+    }
 
-        totalRides++;
-        rides[ride.distanceFromStart].add(ride);
+    public void sort() {
+        Collections.sort(rides);
     }
 
     public List<Ride> findClosestTo(Car car) {
-        Position position = car.position;
-        int distanceFromZero = position.x + position.y;
-
-        int available = 1;
-        int index = 0;
-        List<Ride> prospectRides = new ArrayList<>();
-        while(available > 0) {
-            if(distanceFromZero - index > 0 && rides[distanceFromZero - index] != null && !rides[distanceFromZero - index].isEmpty()) {
-                prospectRides.add(rides[distanceFromZero - index].remove(0));
+        int distance = 1000000000;
+        Ride prospectRide = null;
+        for (Ride ride: rides) {
+            int newDist = Math.abs(car.position.x - ride.startPos.x) + Math.abs(car.position.y - ride.startPos.y);
+            if(newDist < distance) {
+                distance = newDist;
+                prospectRide = ride;
             }
-
-            if(distanceFromZero + index < rides.length && rides[distanceFromZero + index] != null && !rides[distanceFromZero + index].isEmpty()) {
-                prospectRides.add(rides[distanceFromZero + index].remove(0));
-            }
-
-            available -= prospectRides.size();
-            index++;
         }
 
-
-        return prospectRides;
+        rides.remove(prospectRide);
+        return Collections.singletonList(prospectRide);
     }
 }

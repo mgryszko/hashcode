@@ -1,7 +1,8 @@
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-class Ride
-{
+import java.util.Collection;
+
+class Ride implements Comparable<Ride> {
   final int id;
   final Position startPos;
   final Position endPos;
@@ -34,5 +35,16 @@ class Ride
   public int distance()
   {
     return startPos.distanceTo(endPos);
+  }
+
+  @Override
+  public int compareTo(Ride o) {
+    if(distanceFromStart < o.distanceFromStart) {
+      return -1;
+    } else if(distanceFromStart > o.distanceFromStart) {
+      return 1;
+    }
+
+    return 0;
   }
 }

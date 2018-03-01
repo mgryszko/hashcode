@@ -13,6 +13,8 @@ class RidesTest
     rides.addRide(new Ride(4, 16, 15, 9, 9, 0, 0));
     rides.addRide(new Ride(5, 800, 1000, 9, 9, 0, 0));
 
+    rides.sort();
+
     List<Ride> rides1 = rides.findClosestTo(new Car(0, 0));
     if (rides1.get(0).startPos.x != 0 || rides1.get(0).startPos.y != 1)
     {

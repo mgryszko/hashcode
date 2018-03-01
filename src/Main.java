@@ -21,6 +21,7 @@ public class Main {
           .peek(line -> rideId.incrementAndGet())
           .forEach(line -> rides.addRide(parseRide(line, rideId)));
 
+        rides.sort();
         System.out.println(configuration);
         System.out.println(rides);
 
