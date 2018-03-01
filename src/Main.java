@@ -3,11 +3,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
     static Map<Car, List<Ride>> carRides = new HashMap<>();
-    static Rides rides = new Rides();
+    static EasyRides rides = new EasyRides();
 
     public static void main(String[] args) throws IOException
     {
@@ -43,15 +44,25 @@ public class Main {
             events.add(process(event));
         }
 
-
+      for (List<Ride> entry : carRides.values())
+      {
+        System.out.println(entry.size() + " " + entry.stream().map(ride -> String.valueOf(ride.id)).collect(Collectors.joining(" ")));
+      }
     }
 
     private static Event process(Event event)
     {
         switch (event.type) {
             case CarBecameAvailable:
-                List<Ride> bestRides = rides.findClosestTo(event.car);
-                return new Event(event.nextTick + event.ride.distance(), event.car, bestRides.get(0), Event.Type.PickUpRide);
+              Ride ride = rides.findClosestTo(event.car);
+              if (ride != null)
+              {
+                int nextTick = Math.max(event.nextTick + event.car.distanceTo(ride), ride.earliestStart);
+                return new Event(nextTick, event.car, ride, Event.Type.PickUpRide);
+              }
+              else {
+                return new Event(Integer.MAX_VALUE, event.car, null, Event.Type.CarBecameAvailable);
+              }
             case PickUpRide:
                 return new Event(event.nextTick + event.ride.distance(), event.car, event.ride, Event.Type.RideFinished);
             case RideFinished:
