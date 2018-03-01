@@ -12,7 +12,7 @@ public class Rides {
         Collections.sort(rides);
     }
 
-    public List<Ride> findClosestTo(Car car) {
+    public Ride findClosestTo(Car car) {
         int distance = 1000000000;
         Ride prospectRide = null;
         for (Ride ride: rides) {
@@ -24,6 +24,6 @@ public class Rides {
         }
 
         rides.remove(prospectRide);
-        return Collections.singletonList(prospectRide);
+        return prospectRide;
     }
 }

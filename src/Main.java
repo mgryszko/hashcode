@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 public class Main {
     static Map<Car, List<Ride>> carRides = new HashMap<>();
-    static EasyRides rides = new EasyRides();
+    static Rides rides = new Rides();
 
     public static void main(String[] args) throws IOException
     {
